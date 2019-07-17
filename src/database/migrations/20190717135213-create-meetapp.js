@@ -37,9 +37,12 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      path: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      banner_id: {
+        type: Sequelize.INTEGER,
+        reference: { model: 'files', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allwNull: true,
       },
       user_id: {
         type: Sequelize.INTEGER,
