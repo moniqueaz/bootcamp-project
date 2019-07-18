@@ -84,7 +84,50 @@ class MeetappController {
     return res.json(meetapp);
   }
 
-  async update(req, res) {}
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      description: Yup.string(),
+      location: Yup.string(),
+      date: Yup.date(),
+      banner_id: Yup.number(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+    const { id } = req.params;
+
+    const currentMeetap = await Meetapp.findOne({
+      where: {
+        id,
+      },
+    });
+
+    const houerStart = startOfHour(currentMeetap.date);
+    if (isBefore(houerStart, new Date())) {
+      return res
+        .status(401)
+        .json({ error: 'You can not change a meetup that has passed.' });
+    }
+
+    if (req.userId !== currentMeetap.user_id) {
+      return res
+        .status(401)
+        .json({ error: 'You can only change meetups created by you.' });
+    }
+
+    const bannerExists = await File.findOne({
+      where: { id: req.body.banner_id },
+    });
+
+    if (!bannerExists)
+      return res.status(400).json({ error: 'Banner does not exists.' });
+
+    const meetapp = await currentMeetap.update(req.body);
+
+    return res.json(meetapp);
+  }
 
   async delete(req, res) {}
 
