@@ -163,8 +163,6 @@ class MeetappController {
 
     return res.json(meetapp);
   }
-
-  async show(req, res) {}
 }
 
 export default new MeetappController();
