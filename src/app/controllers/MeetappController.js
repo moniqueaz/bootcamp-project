@@ -104,6 +104,10 @@ class MeetappController {
       },
     });
 
+    if (!currentMeetap) {
+      return res.status(404).json({ error: 'Meetup not found.' });
+    }
+
     const houerStart = startOfHour(currentMeetap.date);
     if (isBefore(houerStart, new Date())) {
       return res
@@ -129,7 +133,36 @@ class MeetappController {
     return res.json(meetapp);
   }
 
-  async delete(req, res) {}
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const currentMeetap = await Meetapp.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!currentMeetap) {
+      return res.status(404).json({ error: 'Meetup not found.' });
+    }
+
+    const houerStart = startOfHour(currentMeetap.date);
+    if (isBefore(houerStart, new Date())) {
+      return res
+        .status(401)
+        .json({ error: 'You can not delete a meetup that has passed.' });
+    }
+
+    if (req.userId !== currentMeetap.user_id) {
+      return res
+        .status(401)
+        .json({ error: 'You can only delete meetups created by you.' });
+    }
+
+    const meetapp = await currentMeetap.destroy();
+
+    return res.json(meetapp);
+  }
 
   async show(req, res) {}
 }
