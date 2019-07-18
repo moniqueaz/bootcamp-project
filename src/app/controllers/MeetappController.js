@@ -1,5 +1,11 @@
 import * as Yup from 'yup';
-import { parseISO, startOfDay, endOfDay } from 'date-fns';
+import {
+  parseISO,
+  startOfDay,
+  endOfDay,
+  startOfHour,
+  isBefore,
+} from 'date-fns';
 import { Op } from 'sequelize';
 import Meetapp from '../models/Meetapp';
 import User from '../models/User';
@@ -36,7 +42,47 @@ class MeetappController {
     return res.json(meetapp);
   }
 
-  async store(req, res) {}
+  async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      description: Yup.string().required(),
+      location: Yup.string().required(),
+      date: Yup.date().required(),
+      banner_id: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const { title, description, location, date, banner_id } = req.body;
+
+    // verificar se data não já passou
+    const houerStart = startOfHour(parseISO(req.body.date));
+
+    if (isBefore(houerStart, new Date())) {
+      return res.status(400).json({ error: 'Past dates are not permitted' });
+    }
+
+    // verificar se o banner existe
+    const bannerExists = await File.findOne({
+      where: { id: req.body.banner_id },
+    });
+
+    if (!bannerExists)
+      return res.status(400).json({ error: 'Banner does not exists.' });
+
+    const meetapp = await Meetapp.create({
+      title,
+      description,
+      location,
+      date,
+      banner_id,
+      user_id: req.userId,
+    });
+
+    return res.json(meetapp);
+  }
 
   async update(req, res) {}
 
