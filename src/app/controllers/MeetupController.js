@@ -98,24 +98,24 @@ class MeetupController {
     }
     const { id } = req.params;
 
-    const currentMeetap = await Meetup.findOne({
+    const currentMeetup = await Meetup.findOne({
       where: {
         id,
       },
     });
 
-    if (!currentMeetap) {
+    if (!currentMeetup) {
       return res.status(404).json({ error: 'Meetup not found.' });
     }
 
-    const houerStart = startOfHour(currentMeetap.date);
+    const houerStart = startOfHour(currentMeetup.date);
     if (isBefore(houerStart, new Date())) {
       return res
         .status(401)
         .json({ error: 'You can not change a meetup that has passed.' });
     }
 
-    if (req.userId !== currentMeetap.user_id) {
+    if (req.userId !== currentMeetup.user_id) {
       return res
         .status(401)
         .json({ error: 'You can only change meetups created by you.' });
@@ -128,7 +128,7 @@ class MeetupController {
     if (!bannerExists)
       return res.status(400).json({ error: 'Banner does not exists.' });
 
-    const meetup = await currentMeetap.update(req.body);
+    const meetup = await currentMeetup.update(req.body);
 
     return res.json(meetup);
   }
@@ -136,30 +136,30 @@ class MeetupController {
   async delete(req, res) {
     const { id } = req.params;
 
-    const currentMeetap = await Meetup.findOne({
+    const currentMeetup = await Meetup.findOne({
       where: {
         id,
       },
     });
 
-    if (!currentMeetap) {
+    if (!currentMeetup) {
       return res.status(404).json({ error: 'Meetup not found.' });
     }
 
-    const houerStart = startOfHour(currentMeetap.date);
+    const houerStart = startOfHour(currentMeetup.date);
     if (isBefore(houerStart, new Date())) {
       return res
         .status(401)
         .json({ error: 'You can not delete a meetup that has passed.' });
     }
 
-    if (req.userId !== currentMeetap.user_id) {
+    if (req.userId !== currentMeetup.user_id) {
       return res
         .status(401)
         .json({ error: 'You can only delete meetups created by you.' });
     }
 
-    const meetup = await currentMeetap.destroy();
+    const meetup = await currentMeetup.destroy();
 
     return res.json(meetup);
   }
