@@ -18,7 +18,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('meetapps', {
+    return queryInterface.createTable('meetups', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -45,15 +45,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         reference: { model: 'files', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
         allwNull: true,
       },
       user_id: {
         type: Sequelize.INTEGER,
         reference: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allwNull: false,
+        onDelete: 'CASCADE',
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -67,6 +67,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('meetapps');
+    return queryInterface.dropTable('meetups');
   },
 };
