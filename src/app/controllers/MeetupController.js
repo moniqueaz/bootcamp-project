@@ -7,22 +7,22 @@ import {
   isBefore,
 } from 'date-fns';
 import { Op } from 'sequelize';
-import Meetapp from '../models/Meetapp';
+import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
 
-class MeetappController {
+class MeetupController {
   async index(req, res) {
     const { page = 1, date } = req.query;
     const parseDate = parseISO(date);
-    const meetapp = await Meetapp.findAll({
+    const meetup = await Meetup.findAll({
       where: {
         date: {
           [Op.between]: [startOfDay(parseDate), endOfDay(parseDate)],
         },
       },
       order: ['date'],
-      attributes: ['title', 'description', 'date'],
+      attributes: ['id', 'title', 'description', 'date'],
       limit: 10,
       offset: (page - 1) * 10,
       include: [
@@ -39,7 +39,7 @@ class MeetappController {
       ],
     });
 
-    return res.json(meetapp);
+    return res.json(meetup);
   }
 
   async store(req, res) {
@@ -72,7 +72,7 @@ class MeetappController {
     if (!bannerExists)
       return res.status(400).json({ error: 'Banner does not exists.' });
 
-    const meetapp = await Meetapp.create({
+    const meetup = await Meetup.create({
       title,
       description,
       location,
@@ -81,7 +81,7 @@ class MeetappController {
       user_id: req.userId,
     });
 
-    return res.json(meetapp);
+    return res.json(meetup);
   }
 
   async update(req, res) {
@@ -98,7 +98,7 @@ class MeetappController {
     }
     const { id } = req.params;
 
-    const currentMeetap = await Meetapp.findOne({
+    const currentMeetap = await Meetup.findOne({
       where: {
         id,
       },
@@ -128,15 +128,15 @@ class MeetappController {
     if (!bannerExists)
       return res.status(400).json({ error: 'Banner does not exists.' });
 
-    const meetapp = await currentMeetap.update(req.body);
+    const meetup = await currentMeetap.update(req.body);
 
-    return res.json(meetapp);
+    return res.json(meetup);
   }
 
   async delete(req, res) {
     const { id } = req.params;
 
-    const currentMeetap = await Meetapp.findOne({
+    const currentMeetap = await Meetup.findOne({
       where: {
         id,
       },
@@ -159,10 +159,10 @@ class MeetappController {
         .json({ error: 'You can only delete meetups created by you.' });
     }
 
-    const meetapp = await currentMeetap.destroy();
+    const meetup = await currentMeetap.destroy();
 
-    return res.json(meetapp);
+    return res.json(meetup);
   }
 }
 
-export default new MeetappController();
+export default new MeetupController();

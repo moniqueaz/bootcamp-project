@@ -7,7 +7,7 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 
 import authMiddleware from './app/middlewares/auth';
-import MeetappController from './app/controllers/MeetappController';
+import MeetupController from './app/controllers/MeetupController';
 import OrganizerController from './app/controllers/OrganizerController';
 
 const routes = new Router();
@@ -22,10 +22,10 @@ routes.post('/sessions', SessionController.store);
 
 routes.use(authMiddleware);
 
-routes.get('/meetups', MeetappController.index);
-routes.post('/meetups', MeetappController.store);
-routes.put('/meetups/:id', MeetappController.update);
-routes.delete('/meetups/:id', MeetappController.delete);
+routes.get('/meetups', MeetupController.index);
+routes.post('/meetups', MeetupController.store);
+routes.put('/meetups/:id', MeetupController.update);
+routes.delete('/meetups/:id', MeetupController.delete);
 
 routes.get('/organizer', OrganizerController.index);
 

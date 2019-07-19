@@ -1,11 +1,11 @@
-import Meetapp from '../models/Meetapp';
+import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
 
 class OrganizerController {
   async index(req, res) {
     const { page = 1 } = req.query;
-    const meetapp = await Meetapp.findAll({
+    const meetup = await Meetup.findAll({
       where: {
         user_id: req.userId,
       },
@@ -27,7 +27,7 @@ class OrganizerController {
       ],
     });
 
-    return res.json(meetapp);
+    return res.json(meetup);
   }
 }
 
