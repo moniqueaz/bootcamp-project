@@ -1,5 +1,8 @@
+import { format, pt } from 'date-fns';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
+import Notification from '../schemas/Notifications';
+import User from '../models/User';
 
 class SubscriptionController {
   async store(req, res) {
@@ -38,6 +41,19 @@ class SubscriptionController {
     const subscription = await Subscription.create({
       meetup_id: id,
       user_id: req.userId,
+    });
+
+    /**
+     * Notification
+     */
+
+    const user = await User.findByPk(req.userId);
+    const formatDate = format(meetup.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+      locale: pt,
+    });
+    await Notification.create({
+      content: `Nova inscrição de ${user.name} <${user.email}> para a Meetup ${meetup.title} no ${formatDate}`,
+      user: meetup.user_id,
     });
 
     return res.json(subscription);
