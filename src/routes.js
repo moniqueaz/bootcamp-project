@@ -37,6 +37,7 @@ routes.delete('/subscription/:id', SubscriptionController.delete);
 routes.put('/users', UserController.update);
 
 routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
