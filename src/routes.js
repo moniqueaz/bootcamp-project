@@ -32,7 +32,7 @@ routes.delete('/meetups/:id', MeetupController.delete);
 routes.get('/organizer', OrganizerController.index);
 
 routes.post('/subscription/:id', SubscriptionController.store);
-routes.delete('/subscription/:id', SubscriptionController.delete);
+// routes.delete('/subscription/:id', SubscriptionController.delete);
 
 routes.put('/users', UserController.update);
 

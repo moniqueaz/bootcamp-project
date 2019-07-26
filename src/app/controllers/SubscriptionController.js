@@ -1,8 +1,12 @@
-import { format, pt } from 'date-fns';
+// import { format, pt } from 'date-fns';
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
 import Notification from '../schemas/Notifications';
 import User from '../models/User';
+import Queue from '../../lib/Queue';
+import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
   async store(req, res) {
@@ -56,10 +60,13 @@ class SubscriptionController {
       user: meetup.user_id,
     });
 
+    await Queue.add(SubscriptionMail.key, {
+      subscription,
+      user,
+    });
+
     return res.json(subscription);
   }
-
-  async delete(req, res) {}
 }
 
 export default new SubscriptionController();
