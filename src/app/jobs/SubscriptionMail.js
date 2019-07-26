@@ -12,7 +12,7 @@ class SubscriptionMail {
     console.log('A fila executou');
     await Mail.sendMail({
       to: `${user.name} <${user.email}>`,
-      subject: 'Agendamento Cancelado',
+      subject: 'Inscrição Meetup',
       template: 'subscription',
       context: {
         user: user.name,
